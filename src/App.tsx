@@ -1,26 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Layout } from "antd";
+import { Routes, Route } from "react-router-dom";
+import Login from './pages/Login';
+import Register from './pages/Register';
+import { HeaderComponent } from "./components/HeaderComponent/HeaderComponent";
+import { AccountPage } from './pages/AccountPage';
+import { AccountDetailPage } from './pages/AccountDetailPage';
+import "./App.scss";
 
-function App() {
+export const App = () => {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Layout className="main-layout">
+        <HeaderComponent />
+        <Layout className="body-layout">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/accounts" element={<AccountPage />} />
+            <Route path="/accounts/:id" element={<AccountDetailPage />} />
+          </Routes>
+        </Layout>
+      </Layout>
   );
-}
-
-export default App;
+};
