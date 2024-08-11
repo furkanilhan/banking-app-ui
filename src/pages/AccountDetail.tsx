@@ -10,7 +10,7 @@ interface Account {
     balance: number;
 }
 
-export const AccountDetailPage: React.FC = () => {
+export const AccountDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [account, setAccount] = useState<Account | null>(null);
     const [loading, setLoading] = useState(false);

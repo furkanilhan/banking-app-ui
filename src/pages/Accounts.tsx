@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { List, Card, Input, Pagination, message, Row, Col, Button } from 'antd';
+import { List, Card, Input, Pagination, message, Row, Col, Button, Modal } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { fetchAccounts } from '../services/account';
+import { fetchAccounts, deleteAccount } from '../services/account';
 
 const { Search } = Input;
 
@@ -12,13 +12,16 @@ interface Account {
     balance: number;
 }
 
-export const AccountPage: React.FC = () => {
+export const Accounts: React.FC = () => {
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [totalAccounts, setTotalAccounts] = useState(0);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [nameSearch, setNameSearch] = useState<string>('');
     const [numberSearch, setNumberSearch] = useState<string>('');
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [deletingAccountId, setDeletingAccountId] = useState<string | null>(null);
+
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -66,17 +69,53 @@ export const AccountPage: React.FC = () => {
         navigate(`?${params.toString()}`);
     };
 
+    const handleCreateAccount = () => {
+        navigate('/accounts/create');
+    };
+
+    const handleUpdateAccount = (id: string) => {
+        navigate(`/accounts/update/${id}`);
+    };
+
+    const handleViewAccountDetails = (id: string) => {
+        navigate(`/accounts/${id}`);
+    };
+
+    const showDeleteModal = (id: string) => {
+        setDeletingAccountId(id);
+        setIsModalVisible(true);
+    };
+
+    const handleDeleteAccount = async () => {
+        if (deletingAccountId) {
+            try {
+                await deleteAccount(deletingAccountId);
+                message.success('Account deleted successfully!');
+                setIsModalVisible(false);
+                setDeletingAccountId(null);
+                loadAccounts(currentPage - 1, nameSearch, numberSearch);
+            } catch (error) {
+                message.error('Failed to delete account.');
+            }
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setIsModalVisible(false);
+        setDeletingAccountId(null);
+    };
+
     return (
         <div>
             <Row gutter={16} style={{ marginBottom: 16 }}>
-                <Col span={10}>
+                <Col span={8}>
                     <Search
                         placeholder="Search by account name"
                         value={nameSearch}
                         onChange={(e) => setNameSearch(e.target.value)}
                     />
                 </Col>
-                <Col span={10}>
+                <Col span={8}>
                     <Search
                         placeholder="Search by account number"
                         value={numberSearch}
@@ -88,6 +127,11 @@ export const AccountPage: React.FC = () => {
                         Search
                     </Button>
                 </Col>
+                <Col span={4}>
+                    <Button type="primary" onClick={handleCreateAccount}>
+                        Create Account
+                    </Button>
+                </Col>
             </Row>
             <List
                 loading={loading}
@@ -96,8 +140,19 @@ export const AccountPage: React.FC = () => {
                 renderItem={(account) => (
                     <List.Item>
                         <Card
-                            title={account.name}
-                            onClick={() => navigate(`/accounts/${account.id}`)}
+                            title={
+                                <a onClick={() => handleViewAccountDetails(account.id)}>
+                                    {account.name}
+                                </a>
+                            }
+                            actions={[
+                                <Button type="link" onClick={() => handleUpdateAccount(account.id)}>
+                                    Update
+                                </Button>,
+                                <Button type="link" danger onClick={() => showDeleteModal(account.id)}>
+                                    Delete
+                                </Button>
+                            ]}
                         >
                             <p>Account Number: {account.number}</p>
                             <p>Balance: {account.balance} USD</p>
@@ -112,6 +167,17 @@ export const AccountPage: React.FC = () => {
                 onChange={handlePageChange}
                 style={{ marginTop: 16 }}
             />
+
+            <Modal
+                title="Delete Account"
+                visible={isModalVisible}
+                onOk={handleDeleteAccount}
+                onCancel={handleCancelDelete}
+                okText="Delete"
+                cancelText="Cancel"
+            >
+                <p>Are you sure you want to delete this account?</p>
+            </Modal>
         </div>
     );
 };

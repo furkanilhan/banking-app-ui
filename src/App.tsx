@@ -3,8 +3,10 @@ import { Routes, Route } from "react-router-dom";
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { HeaderComponent } from "./components/HeaderComponent/HeaderComponent";
-import { AccountPage } from './pages/AccountPage';
-import { AccountDetailPage } from './pages/AccountDetailPage';
+import { Accounts } from './pages/Accounts';
+import { AccountDetail } from './pages/AccountDetail';
+import { AccountCreate } from './pages/AccountCreate';
+import { AccountUpdate } from './pages/AccountUpdate';
 import "./App.scss";
 
 export const App = () => {
@@ -16,8 +18,10 @@ export const App = () => {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/accounts" element={<AccountPage />} />
-            <Route path="/accounts/:id" element={<AccountDetailPage />} />
+            <Route path="/accounts" element={<Accounts />} />
+            <Route path="/accounts/:id" element={<AccountDetail />} />
+            <Route path="/accounts/create" element={<AccountCreate />} />
+            <Route path="/accounts/update/:id" element={<AccountUpdate />} />
           </Routes>
         </Layout>
       </Layout>

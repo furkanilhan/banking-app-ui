@@ -25,3 +25,43 @@ export const fetchAccountById = async (id: string) => {
         throw error;
     }
 };
+
+export const createAccount = async (name: string, initialBalance: number) => {
+    try {
+        const response = await axiosInstance.post('/accounts', {}, {
+            params: {
+            name,
+            initialBalance
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating account:', error);
+        throw error;
+    }
+};
+
+export const updateAccount = async (id: string, name: string, balance: number) => {
+    try {
+        const response = await axiosInstance.put(`/accounts/${id}`, {}, {
+            params: {
+            name,
+            balance
+        }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating account:', error);
+        throw error;
+    }
+};
+
+export const deleteAccount = async (id: string) => {
+    try {
+        const response = await axiosInstance.delete(`/accounts/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        throw error;
+    }
+};
