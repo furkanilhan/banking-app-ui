@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Card } from 'antd';
-import { useParams } from 'react-router-dom';
-import { fetchAccountById } from '../services/account';
+import { Card, Button, message, Modal } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
+import { fetchAccountById, deleteAccount } from '../services/account';
+import { TransactionHistory } from './TransactionHistory';
 
 interface Account {
     id: string;
@@ -14,6 +15,8 @@ export const AccountDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [account, setAccount] = useState<Account | null>(null);
     const [loading, setLoading] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadAccount = async () => {
@@ -23,6 +26,7 @@ export const AccountDetail: React.FC = () => {
                 setAccount(data);
             } catch (error) {
                 console.error('Failed to load account details:', error);
+                message.error('Failed to load account details.');
             }
             setLoading(false);
         };
@@ -30,18 +34,81 @@ export const AccountDetail: React.FC = () => {
         loadAccount();
     }, [id]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
+    const handleEdit = () => {
+        navigate(`/accounts/update/${id}`);
+    };
+
+    const handleTransfer = () => {
+        navigate(`/transfer?fromAccountId=${id}`);
+    };
+
+    const showDeleteModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteAccount(id!);
+            message.success('Account deleted successfully!');
+            navigate('/accounts');
+        } catch (error) {
+            message.error('Failed to delete account.');
+        } finally {
+            setIsModalVisible(false);
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setIsModalVisible(false);
+    };
+
     return (
         <div>
+            <Button onClick={handleBack} style={{ marginBottom: 16 }}>
+                Back
+            </Button>
             {loading ? (
                 <p>Loading...</p>
             ) : account ? (
-                <Card title={account.name}>
-                    <p>Account Number: {account.number}</p>
-                    <p>Balance: {account.balance} USD</p>
-                </Card>
+                <>
+                    <Card
+                        title={account.name}
+                        actions={[
+                            <Button type="primary" onClick={handleEdit}>
+                                Edit
+                            </Button>,
+                            <Button type="primary" onClick={handleTransfer}>
+                                Transfer
+                            </Button>,
+                            <Button type="primary" danger onClick={showDeleteModal}>
+                                Delete
+                            </Button>
+                        ]}
+                    >
+                        <p>Account Number: {account.number}</p>
+                        <p>Balance: {account.balance} USD</p>
+                    </Card>
+                    {/* Transaction History Bileşeni */}
+                    <TransactionHistory accountId={account.id} />
+                </>
             ) : (
                 <p>Account not found.</p>
             )}
+
+            <Modal
+                title="Delete Account"
+                visible={isModalVisible}
+                onOk={handleDelete}
+                onCancel={handleCancelDelete}
+                okText="Delete"
+                cancelText="Cancel"
+            >
+                <p>Are you sure you want to delete this account?</p>
+            </Modal>
         </div>
     );
 };

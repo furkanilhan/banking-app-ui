@@ -7,6 +7,8 @@ import { Accounts } from './pages/Accounts';
 import { AccountDetail } from './pages/AccountDetail';
 import { AccountCreate } from './pages/AccountCreate';
 import { AccountUpdate } from './pages/AccountUpdate';
+import { TransferForm } from './pages/TransferForm';
+import { TransactionHistory } from './pages/TransactionHistory';
 import "./App.scss";
 
 export const App = () => {
@@ -22,6 +24,8 @@ export const App = () => {
             <Route path="/accounts/:id" element={<AccountDetail />} />
             <Route path="/accounts/create" element={<AccountCreate />} />
             <Route path="/accounts/update/:id" element={<AccountUpdate />} />
+            <Route path="/transfer" element={<TransferForm />} />
+            <Route path="/transactions/account/:accountId" element={<TransactionHistory />} />
           </Routes>
         </Layout>
       </Layout>

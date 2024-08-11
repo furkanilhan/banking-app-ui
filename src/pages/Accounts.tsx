@@ -73,6 +73,14 @@ export const Accounts: React.FC = () => {
         navigate('/accounts/create');
     };
 
+    const handleTransfer = (fromAccountId?: string) => {
+        if (fromAccountId) {
+            navigate(`/transfer?fromAccountId=${fromAccountId}`);
+        } else {
+            navigate('/transfer');
+        }
+    };
+
     const handleUpdateAccount = (id: string) => {
         navigate(`/accounts/update/${id}`);
     };
@@ -108,28 +116,33 @@ export const Accounts: React.FC = () => {
     return (
         <div>
             <Row gutter={16} style={{ marginBottom: 16 }}>
-                <Col span={8}>
+                <Col span={6}>
                     <Search
                         placeholder="Search by account name"
                         value={nameSearch}
                         onChange={(e) => setNameSearch(e.target.value)}
                     />
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
                     <Search
                         placeholder="Search by account number"
                         value={numberSearch}
                         onChange={(e) => setNumberSearch(e.target.value)}
                     />
                 </Col>
-                <Col span={4}>
+                <Col span={6}>
                     <Button type="primary" onClick={handleSearch}>
                         Search
                     </Button>
                 </Col>
-                <Col span={4}>
+                <Col span={3}>
                     <Button type="primary" onClick={handleCreateAccount}>
                         Create Account
+                    </Button>
+                </Col>
+                <Col span={3}>
+                    <Button type="primary" onClick={() => handleTransfer()}>
+                        Transfer
                     </Button>
                 </Col>
             </Row>
@@ -151,7 +164,10 @@ export const Accounts: React.FC = () => {
                                 </Button>,
                                 <Button type="link" danger onClick={() => showDeleteModal(account.id)}>
                                     Delete
-                                </Button>
+                                </Button>,
+                                <Button type="link" onClick={() => handleTransfer(account.id)}>
+                                    Transfer
+                                </Button>,
                             ]}
                         >
                             <p>Account Number: {account.number}</p>
