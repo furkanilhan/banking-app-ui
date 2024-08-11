@@ -1,38 +1,27 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Card, Button, message, Modal } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchAccountById, deleteAccount } from '../services/account';
+import { deleteAccount as deleteAccountService } from '../services/account';
 import { TransactionHistory } from './TransactionHistory';
-
-interface Account {
-    id: string;
-    name: string;
-    number: string;
-    balance: number;
-}
+import { AppState } from '../store/store';
+import { deleteAccount } from '../store/accountReducer';
 
 export const AccountDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [account, setAccount] = useState<Account | null>(null);
     const [loading, setLoading] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
+    const account = useSelector((state: AppState) => state.accounts.selectedAccount);
 
     useEffect(() => {
-        const loadAccount = async () => {
-            setLoading(true);
-            try {
-                const data = await fetchAccountById(id!);
-                setAccount(data);
-            } catch (error) {
-                console.error('Failed to load account details:', error);
-                message.error('Failed to load account details.');
-            }
-            setLoading(false);
-        };
-
-        loadAccount();
-    }, [id]);
+        if (!isAuthenticated) {
+            navigate('/login');
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleBack = () => {
         navigate(-1);
@@ -52,7 +41,8 @@ export const AccountDetail: React.FC = () => {
 
     const handleDelete = async () => {
         try {
-            await deleteAccount(id!);
+            await deleteAccountService(id!);
+            dispatch(deleteAccount(id!));
             message.success('Account deleted successfully!');
             navigate('/accounts');
         } catch (error) {
@@ -92,7 +82,6 @@ export const AccountDetail: React.FC = () => {
                         <p>Account Number: {account.number}</p>
                         <p>Balance: {account.balance} USD</p>
                     </Card>
-                    {/* Transaction History Bileşeni */}
                     <TransactionHistory accountId={account.id} />
                 </>
             ) : (
@@ -101,7 +90,7 @@ export const AccountDetail: React.FC = () => {
 
             <Modal
                 title="Delete Account"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onOk={handleDelete}
                 onCancel={handleCancelDelete}
                 okText="Delete"

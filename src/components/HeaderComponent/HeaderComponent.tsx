@@ -1,17 +1,18 @@
 import "./HeaderComponent.scss";
 import { useNavigate } from 'react-router-dom';
 import { Button, Layout } from 'antd';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../store/userActions';
 const { Header } = Layout;
 
 export const HeaderComponent = () => {
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-
-        navigate('/login');
-    };
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
+};
 
   return (
     <Header className="header-container">

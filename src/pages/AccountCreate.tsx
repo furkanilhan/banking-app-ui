@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Form, Input, Button, message } from 'antd';
 import { createAccount } from '../services/account';
 import { useNavigate } from 'react-router-dom';
+import { AppState } from '../store/store';
 
 export const AccountCreate: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
+        }
+    }, [isAuthenticated, navigate]);
 
     const onFinish = async (values: { name: string; initialBalance: number }) => {
         setLoading(true);

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { List, Card, Pagination, message } from 'antd';
 import { fetchTransactionHistory } from '../services/transaction';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { AppState } from '../store/store';
 
 interface Transaction {
     id: string;
@@ -24,6 +26,14 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ accountI
     const [totalTransactions, setTotalTransactions] = useState(0);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const navigate = useNavigate();
+    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
+        }
+    }, [isAuthenticated, navigate]);
 
     useEffect(() => {
         const loadTransactionHistory = async () => {

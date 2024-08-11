@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Form, Input, Button, message, Select } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { initiateTransfer } from '../services/transaction';
 import { fetchAccounts } from '../services/account';
+import { AppState } from '../store/store';
 
 const { Option } = Select;
 
@@ -17,6 +19,14 @@ export const TransferForm: React.FC = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const location = useLocation();
+
+    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
+        }
+    }, [isAuthenticated, navigate]);
 
     useEffect(() => {
         const loadAccounts = async () => {

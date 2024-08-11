@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { List, Card, Input, Pagination, message, Row, Col, Button, Modal } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { fetchAccounts, deleteAccount } from '../services/account';
+import { fetchAccounts, deleteAccount as deleteAccountService } from '../services/account';
+import { setAccounts, deleteAccount, setSelectedAccount } from '../store/accountReducer';
+import { AppState } from '../store/store';
 
 const { Search } = Input;
 
-interface Account {
-    id: string;
-    name: string;
-    number: string;
-    balance: number;
-}
-
 export const Accounts: React.FC = () => {
-    const [accounts, setAccounts] = useState<Account[]>([]);
-    const [totalAccounts, setTotalAccounts] = useState(0);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [nameSearch, setNameSearch] = useState<string>('');
@@ -24,24 +18,15 @@ export const Accounts: React.FC = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
+    const accounts = useSelector((state: AppState) => state.accounts.accounts);
+    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
 
-    const loadAccounts = async (page: number, name?: string, number?: string) => {
-        setLoading(true);
-        try {
-            const data = await fetchAccounts(page, name, number);
-            setAccounts(data.content);
-            setTotalAccounts(data.totalElements);
-        } catch (error: any) {
-            console.error('Fetching accounts failed:', error);
-            if (error.response && error.response.data && error.response.data.message) {
-                const errorMessage = error.response.data.message;
-                message.error(errorMessage);
-            } else {
-                message.error('An unexpected error occurred.');
-            }
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
         }
-        setLoading(false);
-    };
+    }, [isAuthenticated, navigate]);
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -54,13 +39,25 @@ export const Accounts: React.FC = () => {
         loadAccounts(page - 1, name, number);
     }, [location.search]);
 
+    const loadAccounts = async (page: number, name?: string, number?: string) => {
+        setLoading(true);
+        try {
+            const data = await fetchAccounts(page, name, number);
+            dispatch(setAccounts(data.content));
+        } catch (error: any) {
+            console.error('Fetching accounts failed:', error);
+            message.error(error.response?.data?.message || 'An unexpected error occurred.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleSearch = () => {
         const params = new URLSearchParams(location.search);
         params.set('name', nameSearch);
         params.set('number', numberSearch);
         params.set('page', '1');
         navigate(`?${params.toString()}`);
-        loadAccounts(0, nameSearch, numberSearch);
     };
 
     const handlePageChange = (page: number) => {
@@ -74,11 +71,7 @@ export const Accounts: React.FC = () => {
     };
 
     const handleTransfer = (fromAccountId?: string) => {
-        if (fromAccountId) {
-            navigate(`/transfer?fromAccountId=${fromAccountId}`);
-        } else {
-            navigate('/transfer');
-        }
+        navigate(`/transfer?fromAccountId=${fromAccountId}`);
     };
 
     const handleUpdateAccount = (id: string) => {
@@ -86,7 +79,11 @@ export const Accounts: React.FC = () => {
     };
 
     const handleViewAccountDetails = (id: string) => {
-        navigate(`/accounts/${id}`);
+        const selectedAccount = accounts.find(account => account.id === id);
+        if (selectedAccount) {
+            dispatch(setSelectedAccount(selectedAccount));
+            navigate(`/accounts/${id}`);
+        }
     };
 
     const showDeleteModal = (id: string) => {
@@ -97,13 +94,14 @@ export const Accounts: React.FC = () => {
     const handleDeleteAccount = async () => {
         if (deletingAccountId) {
             try {
-                await deleteAccount(deletingAccountId);
+                await deleteAccountService(deletingAccountId);
+                dispatch(deleteAccount(deletingAccountId));
                 message.success('Account deleted successfully!');
-                setIsModalVisible(false);
-                setDeletingAccountId(null);
-                loadAccounts(currentPage - 1, nameSearch, numberSearch);
             } catch (error) {
                 message.error('Failed to delete account.');
+            } finally {
+                setIsModalVisible(false);
+                setDeletingAccountId(null);
             }
         }
     };
@@ -179,14 +177,14 @@ export const Accounts: React.FC = () => {
             <Pagination
                 current={currentPage}
                 pageSize={5}
-                total={totalAccounts}
+                total={accounts.length}
                 onChange={handlePageChange}
                 style={{ marginTop: 16 }}
             />
 
             <Modal
                 title="Delete Account"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onOk={handleDeleteAccount}
                 onCancel={handleCancelDelete}
                 okText="Delete"

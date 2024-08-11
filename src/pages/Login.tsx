@@ -1,17 +1,27 @@
 import React from 'react';
-import { Form, Input, Button, Card, message } from 'antd';
 import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../store/userActions';
+import { Form, Input, Button, Card, message } from 'antd';
 import { login } from '../services/auth';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const onFinish = async (values: { username: string; password: string }) => {
         try {
             const data = await login(values.username, values.password);
 
-            localStorage.setItem('token', data.token);
+            const user = {
+                id: data.id,
+                username: data.username,
+                roles: data.roles,
+            };
+
+            dispatch(loginSuccess(data.token, user));
             navigate('/accounts');
+            
         } catch (error: any) {
             console.error('Login failed:', error);
             if (error.response && error.response.data && error.response.data.message) {
