@@ -53,13 +53,37 @@
     }
 }
 
-.container {
-    width: 100%; 
-    max-width: 1000px; 
-    margin: 0 auto;
-    padding: 20px;
+.card-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    @media (max-width: 960px) {
-        padding: 10px;
+    .card-actions {
+        display: flex;
+        gap: 10px;
     }
 }
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.account-item {
+    display: flex;
+    align-items: center;
+}
+
+.account-key {
+    font-weight: 600;
+    width: 150px;
+    margin-right: 10px;
+}
+
+.account-value {
+    text-align: left; 
+    flex-grow: 1;
+    word-break: break-word;
+}
+

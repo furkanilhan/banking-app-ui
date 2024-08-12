@@ -1,5 +1,6 @@
-import { Layout } from "antd";
+import { ConfigProvider, Layout } from "antd";
 import { Routes, Route } from "react-router-dom";
+import { useTheme } from "./contexts/ThemeContext";
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { HeaderComponent } from "./components/HeaderComponent/HeaderComponent";
@@ -12,8 +13,10 @@ import { TransactionHistory } from './pages/TransactionHistory';
 import "./App.scss";
 
 export const App = () => {
+  const { theme } = useTheme();
 
   return (
+    <ConfigProvider theme={{ token: theme, components: { Layout: theme } }}>
       <Layout className="main-layout">
         <HeaderComponent />
         <Layout className="body-layout">
@@ -29,5 +32,6 @@ export const App = () => {
           </Routes>
         </Layout>
       </Layout>
+      </ConfigProvider>
   );
 };

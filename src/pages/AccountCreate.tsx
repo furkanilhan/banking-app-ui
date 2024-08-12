@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Form, Input, Button, message } from 'antd';
 import { createAccount } from '../services/account';
 import { useNavigate } from 'react-router-dom';
 import { AppState } from '../store/store';
+import { setAccounts } from '../store/accountReducer';
 
 export const AccountCreate: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
+    const dispatch = useDispatch();
+    const accounts = useSelector((state: AppState) => state.accounts.accounts);
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -19,7 +22,8 @@ export const AccountCreate: React.FC = () => {
     const onFinish = async (values: { name: string; initialBalance: number }) => {
         setLoading(true);
         try {
-            await createAccount(values.name, values.initialBalance);
+            const newAccount = await createAccount(values.name, values.initialBalance);
+            dispatch(setAccounts([...accounts, newAccount]));
             message.success('Account created successfully!');
             navigate('/accounts');
         } catch (error) {

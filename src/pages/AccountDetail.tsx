@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Card, Button, message, Modal } from 'antd';
+import { Card, Button, message } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { deleteAccount as deleteAccountService } from '../services/account';
 import { TransactionHistory } from './TransactionHistory';
 import { AppState } from '../store/store';
 import { deleteAccount } from '../store/accountReducer';
+import { DeleteModalComponent } from '../components/DeleteModalComponent/DeleteModalComponent';
 
 export const AccountDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [loading, setLoading] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -39,21 +38,13 @@ export const AccountDetail: React.FC = () => {
         setIsModalVisible(true);
     };
 
-    const handleDelete = async () => {
-        try {
-            await deleteAccountService(id!);
-            dispatch(deleteAccount(id!));
-            message.success('Account deleted successfully!');
-            navigate('/accounts');
-        } catch (error) {
-            message.error('Failed to delete account.');
-        } finally {
-            setIsModalVisible(false);
-        }
-    };
-
     const handleCancelDelete = () => {
         setIsModalVisible(false);
+    };
+
+    const handleAccountDeleted = () => {
+        dispatch(deleteAccount(id!));
+        navigate('/accounts');
     };
 
     return (
@@ -61,9 +52,7 @@ export const AccountDetail: React.FC = () => {
             <Button onClick={handleBack} style={{ marginBottom: 16 }}>
                 Back
             </Button>
-            {loading ? (
-                <p>Loading...</p>
-            ) : account ? (
+            {account ? (
                 <>
                     <Card
                         title={account.name}
@@ -88,16 +77,12 @@ export const AccountDetail: React.FC = () => {
                 <p>Account not found.</p>
             )}
 
-            <Modal
-                title="Delete Account"
-                open={isModalVisible}
-                onOk={handleDelete}
+            <DeleteModalComponent
+                deletingAccountId={id || null}
+                isVisible={isModalVisible}
                 onCancel={handleCancelDelete}
-                okText="Delete"
-                cancelText="Cancel"
-            >
-                <p>Are you sure you want to delete this account?</p>
-            </Modal>
+                onAccountDeleted={handleAccountDeleted}
+            />
         </div>
     );
 };

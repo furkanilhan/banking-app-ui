@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { List, Card, Pagination, message } from 'antd';
+import { List, Card, message } from 'antd';
 import { fetchTransactionHistory } from '../services/transaction';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { PaginationComponent } from '../components/PaginationComponent/PaginationComponent';
 import { AppState } from '../store/store';
 
 interface Transaction {
@@ -98,12 +99,10 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ accountI
                     );
                 }}
             />
-            <Pagination
-                current={currentPage}
-                pageSize={5}
-                total={totalTransactions}
-                onChange={handlePageChange}
-                style={{ marginTop: 16 }}
+            <PaginationComponent
+                currentPage={currentPage}
+                totalItems={totalTransactions}
+                onPageChange={handlePageChange}
             />
         </div>
     );
