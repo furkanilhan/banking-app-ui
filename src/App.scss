@@ -1,6 +1,14 @@
 .main-layout {
   min-height: 100vh;
+  
   .body-layout {
-    padding: 0 50px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    @media (max-width: 960px) {
+      padding: 0 10px;
+    }
   }
 }

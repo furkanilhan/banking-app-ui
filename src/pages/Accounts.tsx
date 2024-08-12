@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { fetchAccounts, deleteAccount as deleteAccountService } from '../services/account';
 import { setAccounts, deleteAccount, setSelectedAccount } from '../store/accountReducer';
 import { AppState } from '../store/store';
+import './Accounts.scss'
 
 const { Search } = Input;
 
@@ -111,87 +112,83 @@ export const Accounts: React.FC = () => {
         setDeletingAccountId(null);
     };
 
-    return (
-        <div>
-            <Row gutter={16} style={{ marginBottom: 16 }}>
-                <Col span={6}>
-                    <Search
+        return (
+            <div className="container">
+            <div className="search-container">
+                <div className="search-group">
+                    <Input
+                        className="search-input"
                         placeholder="Search by account name"
                         value={nameSearch}
                         onChange={(e) => setNameSearch(e.target.value)}
                     />
-                </Col>
-                <Col span={6}>
-                    <Search
+                    <Input
+                        className="search-input"
                         placeholder="Search by account number"
                         value={numberSearch}
                         onChange={(e) => setNumberSearch(e.target.value)}
                     />
-                </Col>
-                <Col span={6}>
                     <Button type="primary" onClick={handleSearch}>
                         Search
                     </Button>
-                </Col>
-                <Col span={3}>
+                </div>
+                <div className="button-group">
                     <Button type="primary" onClick={handleCreateAccount}>
                         Create Account
                     </Button>
-                </Col>
-                <Col span={3}>
                     <Button type="primary" onClick={() => handleTransfer()}>
                         Transfer
                     </Button>
-                </Col>
-            </Row>
-            <List
-                loading={loading}
-                grid={{ gutter: 16, column: 1 }}
-                dataSource={accounts}
-                renderItem={(account) => (
-                    <List.Item>
-                        <Card
-                            title={
-                                <a onClick={() => handleViewAccountDetails(account.id)}>
-                                    {account.name}
-                                </a>
-                            }
-                            actions={[
-                                <Button type="link" onClick={() => handleUpdateAccount(account.id)}>
-                                    Update
-                                </Button>,
-                                <Button type="link" danger onClick={() => showDeleteModal(account.id)}>
-                                    Delete
-                                </Button>,
-                                <Button type="link" onClick={() => handleTransfer(account.id)}>
-                                    Transfer
-                                </Button>,
-                            ]}
-                        >
-                            <p>Account Number: {account.number}</p>
-                            <p>Balance: {account.balance} USD</p>
-                        </Card>
-                    </List.Item>
-                )}
-            />
-            <Pagination
-                current={currentPage}
-                pageSize={5}
-                total={accounts.length}
-                onChange={handlePageChange}
-                style={{ marginTop: 16 }}
-            />
-
-            <Modal
-                title="Delete Account"
-                open={isModalVisible}
-                onOk={handleDeleteAccount}
-                onCancel={handleCancelDelete}
-                okText="Delete"
-                cancelText="Cancel"
-            >
-                <p>Are you sure you want to delete this account?</p>
-            </Modal>
-        </div>
-    );
+                </div>
+            </div>
+                <List
+                    loading={loading}
+                    grid={{ gutter: 16, column: 1 }}
+                    dataSource={accounts}
+                    renderItem={(account) => (
+                        <List.Item>
+                            <Card 
+                                title={
+                                    <a onClick={() => handleViewAccountDetails(account.id)}>
+                                        {account.name}
+                                    </a>
+                                }
+                                actions={[
+                                    <Button type="link" onClick={() => handleUpdateAccount(account.id)}>
+                                        Update
+                                    </Button>,
+                                    <Button type="link" danger onClick={() => showDeleteModal(account.id)}>
+                                        Delete
+                                    </Button>,
+                                    <Button type="link" onClick={() => handleTransfer(account.id)}>
+                                        Transfer
+                                    </Button>,
+                                ]}
+                            >
+                                <p>Account Number: {account.number}</p>
+                                <p>Balance: {account.balance} USD</p>
+                            </Card>
+                        </List.Item>
+                    )}
+                />
+                <Pagination
+                    current={currentPage}
+                    pageSize={5}
+                    total={accounts.length}
+                    onChange={handlePageChange}
+                    style={{ marginTop: 16 }}
+                />
+    
+                <Modal
+                    title="Delete Account"
+                    open={isModalVisible}
+                    onOk={handleDeleteAccount}
+                    onCancel={handleCancelDelete}
+                    okText="Delete"
+                    cancelText="Cancel"
+                >
+                    <p>Are you sure you want to delete this account?</p>
+                </Modal>
+            </div>
+        );
 };
