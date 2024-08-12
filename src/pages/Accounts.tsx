@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { List, Card, Input, message, Button, Tooltip } from 'antd';
-import { EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined, SwapOutlined } from '@ant-design/icons';
+import {
+    EditOutlined,
+    DeleteOutlined,
+    SearchOutlined,
+    PlusOutlined,
+    SwapOutlined,
+} from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { fetchAccounts } from '../services/account';
 import { setAccounts, setSelectedAccount } from '../store/accountReducer';
 import { AppState } from '../store/store';
 import { PaginationComponent } from '../components/PaginationComponent/PaginationComponent';
 import { DeleteModalComponent } from '../components/DeleteModalComponent/DeleteModalComponent';
-import './Accounts.scss'
+import './Accounts.scss';
 
 const { Search } = Input;
 
@@ -18,14 +24,18 @@ export const Accounts: React.FC = () => {
     const [nameSearch, setNameSearch] = useState<string>('');
     const [numberSearch, setNumberSearch] = useState<string>('');
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [deletingAccountId, setDeletingAccountId] = useState<string | null>(null);
+    const [deletingAccountId, setDeletingAccountId] = useState<string | null>(
+        null,
+    );
     const [totalItems, setTotalItems] = useState(0);
 
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
     const accounts = useSelector((state: AppState) => state.accounts.accounts);
-    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
+    const isAuthenticated = useSelector(
+        (state: AppState) => state.user.isAuthenticated,
+    );
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -44,15 +54,22 @@ export const Accounts: React.FC = () => {
         loadAccounts(page - 1, name, number);
     }, [location.search]);
 
-    const loadAccounts = async (page: number, name?: string, number?: string) => {
+    const loadAccounts = async (
+        page: number,
+        name?: string,
+        number?: string,
+    ) => {
         setLoading(true);
         try {
             const data = await fetchAccounts(page, name, number);
             dispatch(setAccounts(data.content));
-            setTotalItems(data.totalElements)
+            setTotalItems(data.totalElements);
         } catch (error: any) {
             console.error('Fetching accounts failed:', error);
-            message.error(error.response?.data?.message || 'An unexpected error occurred.');
+            message.error(
+                error.response?.data?.message ||
+                    'An unexpected error occurred.',
+            );
         } finally {
             setLoading(false);
         }
@@ -77,7 +94,11 @@ export const Accounts: React.FC = () => {
     };
 
     const handleTransfer = (fromAccountId?: string) => {
-        navigate(fromAccountId ? `/transfer?fromAccountId=${fromAccountId}` : '/transfer');
+        navigate(
+            fromAccountId
+                ? `/transfer?fromAccountId=${fromAccountId}`
+                : '/transfer',
+        );
     };
 
     const handleUpdateAccount = (id: string) => {
@@ -107,7 +128,10 @@ export const Accounts: React.FC = () => {
     };
 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'TRY' }).format(amount);
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'TRY',
+        }).format(amount);
     };
 
     const handleClearSearchName = () => {
@@ -134,7 +158,7 @@ export const Accounts: React.FC = () => {
                         className="search-input"
                         placeholder="Search by account name"
                         value={nameSearch}
-                        onChange={(e) => setNameSearch(e.target.value)}
+                        onChange={e => setNameSearch(e.target.value)}
                         allowClear
                         onClear={handleClearSearchName}
                     />
@@ -142,12 +166,12 @@ export const Accounts: React.FC = () => {
                         className="search-input"
                         placeholder="Search by account number"
                         value={numberSearch}
-                        onChange={(e) => setNumberSearch(e.target.value)}
+                        onChange={e => setNumberSearch(e.target.value)}
                         allowClear
                         onClear={handleClearSearchNumber}
                     />
-                    <Button 
-                        type="primary" 
+                    <Button
+                        type="primary"
                         onClick={handleSearch}
                         icon={<SearchOutlined />}
                         className="custom-button"
@@ -156,16 +180,16 @@ export const Accounts: React.FC = () => {
                     </Button>
                 </div>
                 <div className="button-group">
-                    <Button 
-                        type="primary" 
+                    <Button
+                        type="primary"
                         onClick={handleCreateAccount}
                         icon={<PlusOutlined />}
                         className="custom-button"
                     >
                         Create Account
                     </Button>
-                    <Button 
-                        type="primary" 
+                    <Button
+                        type="primary"
                         onClick={() => handleTransfer()}
                         icon={<SwapOutlined />}
                         className="custom-button"
@@ -178,37 +202,50 @@ export const Accounts: React.FC = () => {
             <List
                 grid={{ gutter: 16, column: 1 }}
                 dataSource={accounts}
-                renderItem={(account) => (
+                renderItem={account => (
                     <List.Item>
                         <Card
                             title={
                                 <div className="card-title-container">
-                                    <a className="card-title" onClick={() => handleViewAccountDetails(account.id)}>
+                                    <a
+                                        className="card-title"
+                                        onClick={() =>
+                                            handleViewAccountDetails(account.id)
+                                        }
+                                    >
                                         {account.name}
                                     </a>
                                     <div className="card-actions">
                                         <Tooltip title="Update">
-                                            <Button 
-                                                type="link" 
-                                                icon={<EditOutlined />} 
-                                                onClick={() => handleUpdateAccount(account.id)} 
-                                                className="icon-button" 
+                                            <Button
+                                                type="link"
+                                                icon={<EditOutlined />}
+                                                onClick={() =>
+                                                    handleUpdateAccount(
+                                                        account.id,
+                                                    )
+                                                }
+                                                className="icon-button"
                                             />
                                         </Tooltip>
                                         <Tooltip title="Delete">
-                                            <Button 
-                                                type="link" 
-                                                icon={<DeleteOutlined />} 
-                                                onClick={() => showDeleteModal(account.id)} 
-                                                className="icon-button" 
+                                            <Button
+                                                type="link"
+                                                icon={<DeleteOutlined />}
+                                                onClick={() =>
+                                                    showDeleteModal(account.id)
+                                                }
+                                                className="icon-button"
                                             />
                                         </Tooltip>
                                         <Tooltip title="Transfer">
-                                            <Button 
-                                                type="link" 
-                                                icon={<SwapOutlined />} 
-                                                onClick={() => handleTransfer(account.id)} 
-                                                className="icon-button" 
+                                            <Button
+                                                type="link"
+                                                icon={<SwapOutlined />}
+                                                onClick={() =>
+                                                    handleTransfer(account.id)
+                                                }
+                                                className="icon-button"
                                             />
                                         </Tooltip>
                                     </div>
@@ -217,12 +254,20 @@ export const Accounts: React.FC = () => {
                         >
                             <div className="account-details">
                                 <div className="account-item">
-                                    <span className="account-key">Account Number:</span>
-                                    <span className="account-value">{account.number}</span>
+                                    <span className="account-key">
+                                        Account Number:
+                                    </span>
+                                    <span className="account-value">
+                                        {account.number}
+                                    </span>
                                 </div>
                                 <div className="account-item">
-                                    <span className="account-key">Balance:</span>
-                                    <span className="account-value">{formatCurrency(account.balance)}</span>
+                                    <span className="account-key">
+                                        Balance:
+                                    </span>
+                                    <span className="account-value">
+                                        {formatCurrency(account.balance)}
+                                    </span>
                                 </div>
                             </div>
                         </Card>

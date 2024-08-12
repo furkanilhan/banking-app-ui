@@ -17,8 +17,12 @@ export const AccountDetail: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
-    const account = useSelector((state: AppState) => state.accounts.selectedAccount);
+    const isAuthenticated = useSelector(
+        (state: AppState) => state.user.isAuthenticated,
+    );
+    const account = useSelector(
+        (state: AppState) => state.accounts.selectedAccount,
+    );
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -66,7 +70,10 @@ export const AccountDetail: React.FC = () => {
     };
 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'TRY' }).format(amount);
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'TRY',
+        }).format(amount);
     };
 
     return (
@@ -81,32 +88,30 @@ export const AccountDetail: React.FC = () => {
                     <Card
                         title={
                             <div className="card-title-container">
-                                <a className="card-title">
-                                    {account.name}
-                                </a>
+                                <a className="card-title">{account.name}</a>
                                 <div className="card-actions">
                                     <Tooltip title="Update">
-                                        <Button 
-                                            type="link" 
-                                            icon={<EditOutlined />} 
-                                            onClick={handleEdit} 
-                                            className="icon-button" 
+                                        <Button
+                                            type="link"
+                                            icon={<EditOutlined />}
+                                            onClick={handleEdit}
+                                            className="icon-button"
                                         />
                                     </Tooltip>
                                     <Tooltip title="Delete">
-                                        <Button 
-                                            type="link" 
-                                            icon={<DeleteOutlined />} 
-                                            onClick={showDeleteModal} 
-                                            className="icon-button" 
+                                        <Button
+                                            type="link"
+                                            icon={<DeleteOutlined />}
+                                            onClick={showDeleteModal}
+                                            className="icon-button"
                                         />
                                     </Tooltip>
                                     <Tooltip title="Transfer">
-                                        <Button 
-                                            type="link" 
-                                            icon={<SwapOutlined />} 
-                                            onClick={handleTransfer} 
-                                            className="icon-button" 
+                                        <Button
+                                            type="link"
+                                            icon={<SwapOutlined />}
+                                            onClick={handleTransfer}
+                                            className="icon-button"
                                         />
                                     </Tooltip>
                                 </div>
@@ -115,12 +120,18 @@ export const AccountDetail: React.FC = () => {
                     >
                         <div className="account-details">
                             <div className="account-item">
-                                <span className="account-key">Account Number:</span>
-                                <span className="account-value">{account.number}</span>
+                                <span className="account-key">
+                                    Account Number:
+                                </span>
+                                <span className="account-value">
+                                    {account.number}
+                                </span>
                             </div>
                             <div className="account-item">
                                 <span className="account-key">Balance:</span>
-                                <span className="account-value">{formatCurrency(account.balance)}</span>
+                                <span className="account-value">
+                                    {formatCurrency(account.balance)}
+                                </span>
                             </div>
                         </div>
                     </Card>

@@ -28,16 +28,21 @@ const accountSlice = createSlice({
             state.selectedAccount = action.payload;
         },
         updateAccount(state, action: PayloadAction<Account>) {
-            const index = state.accounts.findIndex(account => account.id === action.payload.id);
+            const index = state.accounts.findIndex(
+                account => account.id === action.payload.id,
+            );
             if (index >= 0) {
                 state.accounts[index] = action.payload;
             }
         },
         deleteAccount(state, action: PayloadAction<string>) {
-            state.accounts = state.accounts.filter(account => account.id !== action.payload);
-        }
+            state.accounts = state.accounts.filter(
+                account => account.id !== action.payload,
+            );
+        },
     },
 });
 
-export const { setAccounts, setSelectedAccount, updateAccount, deleteAccount } = accountSlice.actions;
+export const { setAccounts, setSelectedAccount, updateAccount, deleteAccount } =
+    accountSlice.actions;
 export default accountSlice.reducer;

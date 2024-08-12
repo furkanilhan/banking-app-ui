@@ -9,7 +9,9 @@ import { setAccounts } from '../store/accountReducer';
 export const AccountCreate: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
+    const isAuthenticated = useSelector(
+        (state: AppState) => state.user.isAuthenticated,
+    );
     const dispatch = useDispatch();
     const accounts = useSelector((state: AppState) => state.accounts.accounts);
 
@@ -19,10 +21,16 @@ export const AccountCreate: React.FC = () => {
         }
     }, [isAuthenticated, navigate]);
 
-    const onFinish = async (values: { name: string; initialBalance: number }) => {
+    const onFinish = async (values: {
+        name: string;
+        initialBalance: number;
+    }) => {
         setLoading(true);
         try {
-            const newAccount = await createAccount(values.name, values.initialBalance);
+            const newAccount = await createAccount(
+                values.name,
+                values.initialBalance,
+            );
             dispatch(setAccounts([...accounts, newAccount]));
             message.success('Account created successfully!');
             navigate('/accounts');
@@ -34,16 +42,35 @@ export const AccountCreate: React.FC = () => {
 
     return (
         <Form onFinish={onFinish} layout="vertical">
-            <Form.Item label="Account Name" name="name" rules={[{ required: true, message: 'Please input account name!' }]}>
+            <Form.Item
+                label="Account Name"
+                name="name"
+                rules={[
+                    { required: true, message: 'Please input account name!' },
+                ]}
+            >
                 <Input />
             </Form.Item>
-            <Form.Item label="Initial Balance" name="initialBalance" rules={[{ required: true, message: 'Please input initial balance!' }]}>
+            <Form.Item
+                label="Initial Balance"
+                name="initialBalance"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input initial balance!',
+                    },
+                ]}
+            >
                 <InputNumber<number>
-                        min={0}
-                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={(value) => value?.replace(/\$\s?|(,*)/g, '') as unknown as number}
-                        style={{ width: '100%' }}
-                    />
+                    min={0}
+                    formatter={value =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                    }
+                    parser={value =>
+                        value?.replace(/\$\s?|(,*)/g, '') as unknown as number
+                    }
+                    style={{ width: '100%' }}
+                />
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" loading={loading}>

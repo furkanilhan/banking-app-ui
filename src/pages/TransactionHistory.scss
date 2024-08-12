@@ -9,7 +9,7 @@
         justify-content: space-between;
         align-items: center;
     }
-    
+
     .transaction-type {
         display: flex;
         align-items: center;
@@ -19,7 +19,7 @@
         &.debit {
             color: red;
         }
-    
+
         .transaction-icon {
             margin-left: 8px;
         }

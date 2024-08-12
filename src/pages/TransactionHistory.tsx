@@ -23,13 +23,17 @@ interface TransactionHistoryProps {
     accountId: string;
 }
 
-export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ accountId }) => {
+export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
+    accountId,
+}) => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [totalTransactions, setTotalTransactions] = useState(0);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
-    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
+    const isAuthenticated = useSelector(
+        (state: AppState) => state.user.isAuthenticated,
+    );
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -42,7 +46,10 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ accountI
             if (!accountId) return;
             setLoading(true);
             try {
-                const data = await fetchTransactionHistory(accountId, currentPage - 1);
+                const data = await fetchTransactionHistory(
+                    accountId,
+                    currentPage - 1,
+                );
                 setTransactions(data.content);
                 setTotalTransactions(data.totalElements);
             } catch (error) {
@@ -59,7 +66,10 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ accountI
     };
 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'TRY' }).format(amount);
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'TRY',
+        }).format(amount);
     };
 
     if (!accountId) {
@@ -71,28 +81,58 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ accountI
             <List
                 loading={loading}
                 dataSource={transactions}
-                renderItem={(transaction) => {
+                renderItem={transaction => {
                     const isIncoming = transaction.toAccountId === accountId;
-                    const transactionTypeClass = isIncoming ? 'credit' : 'debit';
+                    const transactionTypeClass = isIncoming
+                        ? 'credit'
+                        : 'debit';
                     const amountSign = isIncoming ? '+' : '-';
 
                     return (
                         <List.Item key={transaction.id}>
-                            <Card title={
-                                <div className="card-title-container">
-                                    <span>Transaction {transaction.id}</span>
-                                    <div className={`transaction-type ${transactionTypeClass}`}>
-                                        {isIncoming ? <ArrowDownOutlined /> : <ArrowUpOutlined />}
-                                        <span className="transaction-icon">{isIncoming ? 'Credit' : 'Debit'}</span>
+                            <Card
+                                title={
+                                    <div className="card-title-container">
+                                        <span>
+                                            Transaction {transaction.id}
+                                        </span>
+                                        <div
+                                            className={`transaction-type ${transactionTypeClass}`}
+                                        >
+                                            {isIncoming ? (
+                                                <ArrowDownOutlined />
+                                            ) : (
+                                                <ArrowUpOutlined />
+                                            )}
+                                            <span className="transaction-icon">
+                                                {isIncoming
+                                                    ? 'Credit'
+                                                    : 'Debit'}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            }>
-                                <p>From Account: {transaction.fromAccountNumber}</p>
+                                }
+                            >
+                                <p>
+                                    From Account:{' '}
+                                    {transaction.fromAccountNumber}
+                                </p>
                                 <p>To Account: {transaction.toAccountNumber}</p>
                                 <p>
-                                    Amount: <span className={`amount ${transactionTypeClass}`}>{amountSign} {formatCurrency(transaction.amount)} </span>
+                                    Amount:{' '}
+                                    <span
+                                        className={`amount ${transactionTypeClass}`}
+                                    >
+                                        {amountSign}{' '}
+                                        {formatCurrency(transaction.amount)}{' '}
+                                    </span>
                                 </p>
-                                <p>Date: {moment(transaction.date).format('YYYY-MM-DD HH:mm:ss')}</p>
+                                <p>
+                                    Date:{' '}
+                                    {moment(transaction.date).format(
+                                        'YYYY-MM-DD HH:mm:ss',
+                                    )}
+                                </p>
                             </Card>
                         </List.Item>
                     );

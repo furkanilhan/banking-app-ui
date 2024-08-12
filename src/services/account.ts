@@ -1,14 +1,22 @@
 import axiosInstance from '../axiosInstance';
 
-export const fetchAccounts = async (page: number, name?: string, number?: string) => {
+export const fetchAccounts = async (
+    page: number,
+    name?: string,
+    number?: string,
+) => {
     try {
-        const response = await axiosInstance.post('/accounts/search', {},{
-            params: {
-                page,
-                name,
-                number,
+        const response = await axiosInstance.post(
+            '/accounts/search',
+            {},
+            {
+                params: {
+                    page,
+                    name,
+                    number,
+                },
             },
-        });
+        );
         return response.data;
     } catch (error) {
         console.error('Error fetching accounts:', error);
@@ -28,12 +36,16 @@ export const fetchAccountById = async (id: string) => {
 
 export const createAccount = async (name: string, initialBalance: number) => {
     try {
-        const response = await axiosInstance.post('/accounts', {}, {
-            params: {
-            name,
-            initialBalance
-            }
-        });
+        const response = await axiosInstance.post(
+            '/accounts',
+            {},
+            {
+                params: {
+                    name,
+                    initialBalance,
+                },
+            },
+        );
         return response.data;
     } catch (error) {
         console.error('Error creating account:', error);
@@ -41,14 +53,22 @@ export const createAccount = async (name: string, initialBalance: number) => {
     }
 };
 
-export const updateAccount = async (id: string, name: string, balance: number) => {
+export const updateAccount = async (
+    id: string,
+    name: string,
+    balance: number,
+) => {
     try {
-        const response = await axiosInstance.put(`/accounts/${id}`, {}, {
-            params: {
-            name,
-            balance
-        }
-        });
+        const response = await axiosInstance.put(
+            `/accounts/${id}`,
+            {},
+            {
+                params: {
+                    name,
+                    balance,
+                },
+            },
+        );
         return response.data;
     } catch (error) {
         console.error('Error updating account:', error);

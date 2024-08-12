@@ -21,14 +21,16 @@ const Login: React.FC = () => {
 
             dispatch(loginSuccess(data.token, user));
             navigate('/accounts');
-            
         } catch (error: any) {
             console.error('Login failed:', error);
-            if (error.response && error.response.data && error.response.data.message) {
+            if (
+                error.response &&
+                error.response.data &&
+                error.response.data.message
+            ) {
                 const errorMessage = error.response.data.message;
 
                 message.error(errorMessage);
-                
             } else {
                 message.error('An error occurred during login.');
             }
@@ -36,7 +38,14 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+            }}
+        >
             <Card title="Login" style={{ width: 300 }}>
                 <Form
                     name="login"
@@ -45,26 +54,43 @@ const Login: React.FC = () => {
                 >
                     <Form.Item
                         name="username"
-                        rules={[{ required: true, message: 'Please enter your username!' }]}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please enter your username!',
+                            },
+                        ]}
                     >
                         <Input placeholder="Username" />
                     </Form.Item>
 
                     <Form.Item
                         name="password"
-                        rules={[{ required: true, message: 'Please enter your password!' }]}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please enter your password!',
+                            },
+                        ]}
                     >
                         <Input.Password placeholder="Password" />
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ width: '100%' }}
+                        >
                             Log In
                         </Button>
                     </Form.Item>
                 </Form>
                 <div style={{ textAlign: 'center' }}>
-                    <p>Don't have an account? <Link to="/register">Register</Link></p>
+                    <p>
+                        Don't have an account?{' '}
+                        <Link to="/register">Register</Link>
+                    </p>
                 </div>
             </Card>
         </div>

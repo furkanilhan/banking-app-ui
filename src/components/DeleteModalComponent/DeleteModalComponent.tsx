@@ -11,7 +11,12 @@ interface DeleteModalProps {
     onAccountDeleted: () => void;
 }
 
-export const DeleteModalComponent: React.FC<DeleteModalProps> = ({ deletingAccountId, isVisible, onCancel, onAccountDeleted }) => {
+export const DeleteModalComponent: React.FC<DeleteModalProps> = ({
+    deletingAccountId,
+    isVisible,
+    onCancel,
+    onAccountDeleted,
+}) => {
     const dispatch = useDispatch();
 
     const handleDeleteAccount = async () => {
@@ -20,7 +25,7 @@ export const DeleteModalComponent: React.FC<DeleteModalProps> = ({ deletingAccou
                 await deleteAccountService(deletingAccountId);
                 dispatch(deleteAccount(deletingAccountId));
                 message.success('Account deleted successfully!');
-                onAccountDeleted(); 
+                onAccountDeleted();
             } catch (error) {
                 message.error('Failed to delete account.');
             } finally {

@@ -14,9 +14,11 @@ export const AccountUpdate: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
+    const isAuthenticated = useSelector(
+        (state: AppState) => state.user.isAuthenticated,
+    );
     const account = useSelector((state: AppState) =>
-        state.accounts.accounts.find(account => account.id === id)
+        state.accounts.accounts.find(account => account.id === id),
     );
 
     useEffect(() => {
@@ -28,7 +30,10 @@ export const AccountUpdate: React.FC = () => {
     useEffect(() => {
         const loadAccountDetails = async () => {
             if (account) {
-                form.setFieldsValue({ name: account.name, balance: account.balance });
+                form.setFieldsValue({
+                    name: account.name,
+                    balance: account.balance,
+                });
             } else {
                 message.error('Failed to load account details.');
             }
@@ -39,7 +44,11 @@ export const AccountUpdate: React.FC = () => {
     const onFinish = async (values: { name: string; balance: number }) => {
         setLoading(true);
         try {
-            const updatedAccount = await updateAccount(id!, values.name, values.balance);
+            const updatedAccount = await updateAccount(
+                id!,
+                values.name,
+                values.balance,
+            );
             dispatch(updateAccountInStore(updatedAccount));
             message.success('Account updated successfully!');
             navigate('/accounts');
@@ -58,24 +67,41 @@ export const AccountUpdate: React.FC = () => {
             <Form.Item label="Account Number">
                 <Text>{account?.number}</Text>
             </Form.Item>
-            <Form.Item label="Account Name" name="name" rules={[{ required: true, message: 'Please input account name!' }]}>
+            <Form.Item
+                label="Account Name"
+                name="name"
+                rules={[
+                    { required: true, message: 'Please input account name!' },
+                ]}
+            >
                 <Input />
             </Form.Item>
-            <Form.Item label="Balance" name="balance" rules={[{ required: true, message: 'Please input balance!' }]}>
-            <InputNumber<number>
-                        min={0}
-                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={(value) => value?.replace(/\$\s?|(,*)/g, '') as unknown as number}
-                        style={{ width: '100%' }}
-                    />
+            <Form.Item
+                label="Balance"
+                name="balance"
+                rules={[{ required: true, message: 'Please input balance!' }]}
+            >
+                <InputNumber<number>
+                    min={0}
+                    formatter={value =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                    }
+                    parser={value =>
+                        value?.replace(/\$\s?|(,*)/g, '') as unknown as number
+                    }
+                    style={{ width: '100%' }}
+                />
             </Form.Item>
             <Form.Item>
-                <Button type="primary" htmlType="submit" loading={loading} style={{ marginRight: 8 }}>
+                <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={loading}
+                    style={{ marginRight: 8 }}
+                >
                     Update Account
                 </Button>
-                <Button onClick={handleCancel}>
-                    Cancel
-                </Button>
+                <Button onClick={handleCancel}>Cancel</Button>
             </Form.Item>
         </Form>
     );

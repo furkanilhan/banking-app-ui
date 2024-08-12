@@ -7,30 +7,33 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-    (config) => {
+    config => {
         const token = store.getState().user.token;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     },
-    (error) => {
+    error => {
         return Promise.reject(error);
-    }
+    },
 );
 
 axiosInstance.interceptors.response.use(
-    (response) => {
+    response => {
         return response;
     },
-    (error) => {
-        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+    error => {
+        if (
+            error.response &&
+            (error.response.status === 401 || error.response.status === 403)
+        ) {
             store.dispatch(logout());
             localStorage.removeItem('token');
             window.location.href = '/login';
         }
         return Promise.reject(error);
-    }
+    },
 );
 
 export default axiosInstance;

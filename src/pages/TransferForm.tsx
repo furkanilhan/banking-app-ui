@@ -20,9 +20,15 @@ export const TransferForm: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
-    const allAccounts = useSelector((state: AppState) => state.accounts.accounts);
-    const selectedAccount = useSelector((state: AppState) => state.accounts.selectedAccount);
+    const isAuthenticated = useSelector(
+        (state: AppState) => state.user.isAuthenticated,
+    );
+    const allAccounts = useSelector(
+        (state: AppState) => state.accounts.accounts,
+    );
+    const selectedAccount = useSelector(
+        (state: AppState) => state.accounts.selectedAccount,
+    );
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -34,12 +40,18 @@ export const TransferForm: React.FC = () => {
             const fromAccountId = params.get('fromAccountId');
 
             if (selectedAccount && fromAccountId) {
-                form.setFieldsValue({ fromAccountNumber: selectedAccount.number });
+                form.setFieldsValue({
+                    fromAccountNumber: selectedAccount.number,
+                });
             }
         }
     }, [isAuthenticated, navigate, allAccounts, selectedAccount, form]);
 
-    const onFinish = async (values: { fromAccountNumber: string; toAccountNumber: string; amount: number }) => {
+    const onFinish = async (values: {
+        fromAccountNumber: string;
+        toAccountNumber: string;
+        amount: number;
+    }) => {
         setLoading(true);
         try {
             await initiateTransfer(values);
@@ -65,7 +77,12 @@ export const TransferForm: React.FC = () => {
                     label="From Account"
                     name="fromAccountNumber"
                     initialValue={''}
-                    rules={[{ required: true, message: 'Please select the sender account!' }]}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please select the sender account!',
+                        },
+                    ]}
                 >
                     <Select placeholder="Select sender account" allowClear>
                         {accounts.map((account: Account) => (
@@ -78,24 +95,47 @@ export const TransferForm: React.FC = () => {
                 <Form.Item
                     label="To Account Number"
                     name="toAccountNumber"
-                    rules={[{ required: true, message: 'Please input the recipient account number!' }]}
+                    rules={[
+                        {
+                            required: true,
+                            message:
+                                'Please input the recipient account number!',
+                        },
+                    ]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     label="Amount"
                     name="amount"
-                    rules={[{ required: true, message: 'Please input the amount to transfer!' }]}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input the amount to transfer!',
+                        },
+                    ]}
                 >
                     <InputNumber<number>
                         min={0}
-                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={(value) => value?.replace(/\$\s?|(,*)/g, '') as unknown as number}
+                        formatter={value =>
+                            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                        }
+                        parser={value =>
+                            value?.replace(
+                                /\$\s?|(,*)/g,
+                                '',
+                            ) as unknown as number
+                        }
                         style={{ width: '100%' }}
                     />
                 </Form.Item>
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" loading={loading} style={{ marginRight: 8 }}>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={loading}
+                        style={{ marginRight: 8 }}
+                    >
                         Transfer
                     </Button>
                 </Form.Item>

@@ -8,11 +8,11 @@
         display: flex;
         align-items: center;
         gap: 10px;
-    
+
         .search-input {
             width: 250px;
         }
-    
+
         button {
             margin-left: 10px;
         }
@@ -33,7 +33,7 @@
             flex-direction: column;
             align-items: stretch;
             width: 100%;
-            
+
             .search-input,
             button {
                 width: 100%;
@@ -42,12 +42,12 @@
         }
 
         .search-group {
-            margin-bottom: 10px; 
+            margin-bottom: 10px;
         }
 
         .button-group {
             button {
-                margin-top: 10px; 
+                margin-top: 10px;
             }
         }
     }
@@ -82,8 +82,7 @@
 }
 
 .account-value {
-    text-align: left; 
+    text-align: left;
     flex-grow: 1;
     word-break: break-word;
 }
-
