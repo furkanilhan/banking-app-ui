@@ -1,46 +1,174 @@
-# Getting Started with Create React App
+# Banking App UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a user interface for a banking application developed using React, TypeScript, Redux, and Ant Design.
 
-## Available Scripts
+## Requirements
 
-In the project directory, you can run:
+- Node.js (v14.x or higher)
+- npm (v6.x or higher) or Yarn (optional)
 
-### `npm start`
+## Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Follow these steps to set up the project:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### 1. Clone the Repository
 
-### `npm test`
+```bash
+git clone https://github.com/furkanilhan/banking-app-ui.git
+cd banking-app-ui
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 2. Set Up Environment Variables
 
-### `npm run build`
+Create a `.env` file in the root directory of the project and add the following line:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```env
+REACT_APP_API_BASE_URL=http://localhost:8080/api
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 3. Install Dependencies
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Using npm:
 
-### `npm run eject`
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Or with Yarn:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+yarn install
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 4. Start the Development Server
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+To start the development server:
 
-## Learn More
+Using npm:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Or with Yarn:
+
+```bash
+yarn start
+```
+
+You can view the application in your browser at `http://localhost:3000`.
+
+## Project Structure
+
+- **src/**: Main source code directory.
+  - **components/**: Reusable components.
+  - **pages/**: Different page components.
+  - **services/**: API service files.
+  - **store/**: Redux store and related files.
+- **public/**: Static files and HTML template.
+
+## Linting and Code Formatting
+
+The project is configured with ESLint and Prettier. You can run linting and formatting using the following commands:
+
+### Linting
+
+To lint your code:
+
+Using npm:
+
+```bash
+npm run lint
+```
+
+Or with Yarn:
+
+```bash
+yarn lint
+```
+
+### Formatting
+
+To format your code with Prettier:
+
+Using npm:
+
+```bash
+npm run format
+```
+
+Or with Yarn:
+
+```bash
+yarn format
+```
+
+## Testing
+
+To run the tests:
+
+Using npm:
+
+```bash
+npm run test
+```
+
+Or with Yarn:
+
+```bash
+yarn test
+```
+
+## Building for Production
+
+To build the project for production:
+
+Using npm:
+
+```bash
+npm run build
+```
+
+Or with Yarn:
+
+```bash
+yarn build
+```
+
+This will create an optimized and minified build in the `build/` directory.
+
+## Eject
+
+If you need to customize the configuration of your React app, you can eject it:
+
+Using npm:
+
+```bash
+npm run eject
+```
+
+Or with Yarn:
+
+```bash
+yarn eject
+```
+
+> **Warning:** The `eject` process is irreversible and will move all configuration files into your project. After ejecting, you’ll need to manage the configuration manually.
+
+## Environment Variables
+
+The project relies on environment variables set in the `.env` file. The following variables are available:
+
+- **REACT_APP_API_BASE_URL**: The base URL for API requests. By default, it is set to `http://localhost:8080/api`.
+
+## Contributing
+
+If you'd like to contribute, please open an **issue** or submit a **pull request**.
+
+```
+This `README.md` file provides a comprehensive guide for setting up, developing, testing, and linting the project. It also includes important project details and contribution guidelines.
+```
+
+
+
+
