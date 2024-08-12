@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, InputNumber, message } from 'antd';
 import { createAccount } from '../services/account';
 import { useNavigate } from 'react-router-dom';
 import { AppState } from '../store/store';
@@ -38,7 +38,12 @@ export const AccountCreate: React.FC = () => {
                 <Input />
             </Form.Item>
             <Form.Item label="Initial Balance" name="initialBalance" rules={[{ required: true, message: 'Please input initial balance!' }]}>
-                <Input type="number" />
+                <InputNumber<number>
+                        min={0}
+                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        parser={(value) => value?.replace(/\$\s?|(,*)/g, '') as unknown as number}
+                        style={{ width: '100%' }}
+                    />
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" loading={loading}>

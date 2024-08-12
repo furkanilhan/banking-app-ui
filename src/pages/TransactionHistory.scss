@@ -1,0 +1,43 @@
+.transaction-history-container {
+    width: 100%;
+    .ant-card {
+        width: 100%;
+    }
+
+    .card-title-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .transaction-type {
+        display: flex;
+        align-items: center;
+        &.credit {
+            color: green;
+        }
+        &.debit {
+            color: red;
+        }
+    
+        .transaction-icon {
+            margin-left: 8px;
+        }
+    }
+
+    .amount {
+        font-weight: bold;
+    }
+
+    .credit {
+        color: green;
+    }
+
+    .debit {
+        color: red;
+    }
+
+    .ant-list-item {
+        width: 100%;
+    }
+}

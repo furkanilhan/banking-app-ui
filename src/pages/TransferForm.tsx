@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Form, Input, Button, message, Select } from 'antd';
+import { Form, Input, Button, message, Select, InputNumber } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { initiateTransfer } from '../services/transaction';
-import { fetchAccounts } from '../services/account';
 import { AppState } from '../store/store';
 
 const { Option } = Select;
 
 interface Account {
     id: string;
+    number: string;
     name: string;
 }
 
@@ -21,33 +21,25 @@ export const TransferForm: React.FC = () => {
     const location = useLocation();
 
     const isAuthenticated = useSelector((state: AppState) => state.user.isAuthenticated);
+    const allAccounts = useSelector((state: AppState) => state.accounts.accounts);
+    const selectedAccount = useSelector((state: AppState) => state.accounts.selectedAccount);
 
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login');
-        }
-    }, [isAuthenticated, navigate]);
+        } else {
+            setAccounts(allAccounts);
 
-    useEffect(() => {
-        const loadAccounts = async () => {
-            try {
-                const data = await fetchAccounts(0);
-                setAccounts(data.content);
+            const params = new URLSearchParams(location.search);
+            const fromAccountId = params.get('fromAccountId');
 
-                const params = new URLSearchParams(location.search);
-                const fromAccountId = params.get('fromAccountId');
-                if (fromAccountId) {
-                    form.setFieldsValue({ fromAccountId });
-                }
-            } catch (error) {
-                message.error('Failed to load accounts.');
+            if (selectedAccount && fromAccountId) {
+                form.setFieldsValue({ fromAccountNumber: selectedAccount.number });
             }
-        };
+        }
+    }, [isAuthenticated, navigate, allAccounts, selectedAccount, form]);
 
-        loadAccounts();
-    }, [location.search, form]);
-
-    const onFinish = async (values: { fromAccountId: string; toAccountId: string; amount: number }) => {
+    const onFinish = async (values: { fromAccountNumber: string; toAccountNumber: string; amount: number }) => {
         setLoading(true);
         try {
             await initiateTransfer(values);
@@ -71,21 +63,22 @@ export const TransferForm: React.FC = () => {
             <Form form={form} onFinish={onFinish} layout="vertical">
                 <Form.Item
                     label="From Account"
-                    name="fromAccountId"
+                    name="fromAccountNumber"
+                    initialValue={''}
                     rules={[{ required: true, message: 'Please select the sender account!' }]}
                 >
-                    <Select placeholder="Select sender account">
-                        {accounts.map((account) => (
-                            <Option key={account.id} value={account.id}>
-                                {account.name} ({account.id})
+                    <Select placeholder="Select sender account" allowClear>
+                        {accounts.map((account: Account) => (
+                            <Option key={account.number} value={account.number}>
+                                {account.name} ({account.number})
                             </Option>
                         ))}
                     </Select>
                 </Form.Item>
                 <Form.Item
-                    label="To Account ID"
-                    name="toAccountId"
-                    rules={[{ required: true, message: 'Please input the recipient account ID!' }]}
+                    label="To Account Number"
+                    name="toAccountNumber"
+                    rules={[{ required: true, message: 'Please input the recipient account number!' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -94,7 +87,12 @@ export const TransferForm: React.FC = () => {
                     name="amount"
                     rules={[{ required: true, message: 'Please input the amount to transfer!' }]}
                 >
-                    <Input type="number" />
+                    <InputNumber<number>
+                        min={0}
+                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        parser={(value) => value?.replace(/\$\s?|(,*)/g, '') as unknown as number}
+                        style={{ width: '100%' }}
+                    />
                 </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit" loading={loading} style={{ marginRight: 8 }}>

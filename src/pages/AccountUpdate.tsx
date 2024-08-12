@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Form, Input, Button, message, Typography } from 'antd';
+import { Form, Input, Button, message, Typography, InputNumber } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { updateAccount } from '../services/account';
 import { AppState } from '../store/store';
@@ -62,7 +62,12 @@ export const AccountUpdate: React.FC = () => {
                 <Input />
             </Form.Item>
             <Form.Item label="Balance" name="balance" rules={[{ required: true, message: 'Please input balance!' }]}>
-                <Input type="number" />
+            <InputNumber<number>
+                        min={0}
+                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        parser={(value) => value?.replace(/\$\s?|(,*)/g, '') as unknown as number}
+                        style={{ width: '100%' }}
+                    />
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" loading={loading} style={{ marginRight: 8 }}>

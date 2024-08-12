@@ -77,7 +77,7 @@ export const Accounts: React.FC = () => {
     };
 
     const handleTransfer = (fromAccountId?: string) => {
-        navigate(`/transfer?fromAccountId=${fromAccountId}`);
+        navigate(fromAccountId ? `/transfer?fromAccountId=${fromAccountId}` : '/transfer');
     };
 
     const handleUpdateAccount = (id: string) => {
